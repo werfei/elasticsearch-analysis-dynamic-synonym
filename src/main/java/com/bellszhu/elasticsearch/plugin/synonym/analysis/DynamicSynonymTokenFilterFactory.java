@@ -80,7 +80,7 @@ public class DynamicSynonymTokenFilterFactory extends
 
         this.interval = settings.getAsInt("interval", 60);
         if (settings.get("ignore_case") != null) {
-            DEPRECATION_LOGGER.deprecated(
+            DEPRECATION_LOGGER.deprecatedAndMaybeLog("ignore_case",
                 "The ignore_case option on the synonym_graph filter is deprecated. " +
                     "Instead, insert a lowercase filter in the filter chain before the synonym_graph filter.");
         }
