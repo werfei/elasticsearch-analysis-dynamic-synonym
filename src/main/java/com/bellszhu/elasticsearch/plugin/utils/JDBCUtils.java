@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class JDBCUtils {
@@ -22,7 +23,9 @@ public class JDBCUtils {
             String sql = "SELECT max(modified)  modified FROM tbl_product_synonym where status = 1";
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                maxVersion = rs.getDate("modified").getTime();
+                Date date = rs.getDate("modified");
+                logger.info("获取最后更新时间:" + date);
+                return date.getTime();
             }
         } catch (ClassNotFoundException | SQLException e) {
             logger.error("获取最后更新时间出错", e);
