@@ -10,12 +10,7 @@ import org.elasticsearch.common.logging.DeprecationLogger;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
-import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;
-import org.elasticsearch.index.analysis.AnalysisMode;
-import org.elasticsearch.index.analysis.CharFilterFactory;
-import org.elasticsearch.index.analysis.CustomAnalyzer;
-import org.elasticsearch.index.analysis.TokenFilterFactory;
-import org.elasticsearch.index.analysis.TokenizerFactory;
+import org.elasticsearch.index.analysis.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,11 +66,6 @@ public class DynamicSynonymTokenFilterFactory extends
         if (this.location == null) {
             throw new IllegalArgumentException(
                     "dynamic synonym requires `synonyms_path` to be configured");
-        }
-        if (settings.get("ignore_case") != null) {
-            DEPRECATION_LOGGER.deprecated(
-                "The ignore_case option on the synonym_graph filter is deprecated. " +
-                    "Instead, insert a lowercase filter in the filter chain before the synonym_graph filter.");
         }
 
         this.interval = settings.getAsInt("interval", 60);
@@ -168,14 +158,17 @@ public class DynamicSynonymTokenFilterFactory extends
             SynonymFile synonymFile;
             if (location.startsWith("http://") || location.startsWith("https://")) {
                 synonymFile = new RemoteSynonymFile(
-                        environment, analyzer, expand, lenient,  format, location);
+                        environment, analyzer, expand, lenient, format, location);
+            } else if (location.startsWith("jdbc:")) {
+                synonymFile = new DBRemoteSynonymFile(environment, analyzer, expand, lenient, format,
+                        location);
             } else {
                 synonymFile = new LocalSynonymFile(
                         environment, analyzer, expand, lenient, format, location);
             }
             if (scheduledFuture == null) {
                 scheduledFuture = pool.scheduleAtFixedRate(new Monitor(synonymFile),
-                                interval, interval, TimeUnit.SECONDS);
+                        interval, interval, TimeUnit.SECONDS);
             }
             return synonymFile;
         } catch (Exception e) {
