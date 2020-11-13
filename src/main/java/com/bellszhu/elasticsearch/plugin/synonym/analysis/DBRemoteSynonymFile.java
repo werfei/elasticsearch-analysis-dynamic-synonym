@@ -33,6 +33,7 @@ public class DBRemoteSynonymFile implements SynonymFile {
         this.lenient = lenient;
         this.format = format;
         this.location = location;
+        isNeedReloadSynonymMap();
     }
 
     /**
