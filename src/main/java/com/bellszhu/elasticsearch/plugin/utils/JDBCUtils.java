@@ -17,7 +17,7 @@ public class JDBCUtils {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(dbUrl);
             stmt = conn.createStatement();
             String sql = "SELECT max(modified)  modified FROM tbl_product_synonym where status = 1";
@@ -27,7 +27,7 @@ public class JDBCUtils {
                 logger.info("获取最后更新时间:" + date);
                 return date.getTime();
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             logger.error("获取最后更新时间出错", e);
         } finally {
             closeQuietly(conn, stmt, rs);
@@ -42,7 +42,7 @@ public class JDBCUtils {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(dbUrl);
             stmt = conn.createStatement();
             String sql = "SELECT synonym_word FROM tbl_product_synonym WHERE status = 1";

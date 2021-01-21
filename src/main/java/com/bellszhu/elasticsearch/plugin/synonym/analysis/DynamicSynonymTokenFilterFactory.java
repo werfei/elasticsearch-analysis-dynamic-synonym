@@ -190,6 +190,11 @@ public class DynamicSynonymTokenFilterFactory extends
             if (synonymFile.isNeedReloadSynonymMap()) {
                 synonymMap = synonymFile.reloadSynonymMap();
                 for (AbsSynonymFilter dynamicSynonymFilter : dynamicSynonymFilters.keySet()) {
+                    try {
+                        dynamicSynonymFilter.reset();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     dynamicSynonymFilter.update(synonymMap);
                     logger.info("success reload synonym");
                 }
