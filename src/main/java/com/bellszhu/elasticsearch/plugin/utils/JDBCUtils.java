@@ -24,6 +24,9 @@ public class JDBCUtils {
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Date date = rs.getDate("modified");
+                if (date == null) {
+                    date = new Date();
+                }
                 logger.info("获取最后更新时间:" + date);
                 return date.getTime();
             }
