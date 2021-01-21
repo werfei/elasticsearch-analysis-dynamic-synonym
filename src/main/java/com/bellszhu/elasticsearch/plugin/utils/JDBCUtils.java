@@ -32,6 +32,7 @@ public class JDBCUtils {
             }
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("获取最后更新时间出错", e);
+            return System.currentTimeMillis();
         } finally {
             closeQuietly(conn, stmt, rs);
         }
