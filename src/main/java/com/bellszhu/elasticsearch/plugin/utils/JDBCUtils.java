@@ -23,9 +23,9 @@ public class JDBCUtils {
             String sql = "SELECT max(modified)  modified FROM tbl_product_synonym where status = 1";
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                Date date = rs.getDate("modified");
+                Timestamp date = rs.getTimestamp("modified");
                 if (date == null) {
-                    date = new Date();
+                    return System.currentTimeMillis();
                 }
                 logger.info("获取最后更新时间:" + date);
                 return date.getTime();
